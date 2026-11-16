@@ -41,7 +41,11 @@ Es una versión jugable del Tetris clásico con todas las mecánicas que esperar
 - **Vista previa** de la siguiente pieza.
 - **Sistema de puntuación** clásico de Tetris (100 / 300 / 500 / 800 multiplicado por nivel).
 - **Niveles** que aumentan cada 10 líneas y aceleran la caída.
-- **Pausa** y **Game Over** con opción de reinicio.
+- **Menú de pausa** (`P` o `Esc`) con Reanudar, Reiniciar, Ver controles y selector de **Nivel inicial** (1–10) para la próxima partida. Se navega con el teclado y bloquea los controles del juego mientras está abierto. El nivel elegido se guarda en `localStorage`.
+- **Game Over** con opción de reinicio.
+- **Skins visuales** seleccionables desde el panel lateral (`SKIN`): **Retro** (bloques cuadrados y colores planos), **Neón** (fondo negro y brillo con `shadowBlur`), **Pastel** (colores suaves y esquinas redondeadas) y **Pixel art** (textura de píxeles sobre cada bloque). El cambio se aplica al instante, sin recargar, y la preferencia se guarda en `localStorage` (clave `tetris.skin`).
+- **Pantalla de inicio** con la tabla de records; la partida empieza al pulsar **Jugar** o `Enter`.
+- **Tabla de records local** (top 5) guardada en `localStorage`: al terminar, si tu puntuación entra en el top, puedes escribir tu nombre (máx. 12 caracteres) y tu fila aparece resaltada. También se guardan el **mejor combo** (bloqueos seguidos que limpian líneas) y las **líneas máximas** en una partida. El botón **Borrar records** (dos clics para confirmar) reinicia todo.
 
 ---
 
@@ -84,7 +88,20 @@ Después abre `http://localhost:8000` en el navegador.
 | `↑` o `X` | Rotar la pieza en sentido horario |
 | `↓`       | Soft drop (bajar más rápido)      |
 | `Espacio` | Hard drop (caída instantánea)     |
-| `P`       | Pausar / reanudar                 |
+| `C` / `Shift` | Reservar pieza (hold)         |
+| `P` / `Esc` | Abrir menú de pausa / reanudar  |
+| `Enter`   | Empezar desde la pantalla inicial |
+
+Dentro del menú de pausa:
+
+| Tecla             | Acción                                   |
+| ----------------- | ---------------------------------------- |
+| `↑` / `↓`         | Moverse entre opciones                   |
+| `Enter` / `Espacio` | Elegir la opción seleccionada          |
+| `←` / `→`         | Cambiar el nivel inicial (1–10)          |
+| `P` / `Esc`       | Reanudar la partida                      |
+
+El nivel inicial se aplica al reiniciar (desde el menú o tras un Game Over).
 
 ---
 
@@ -98,7 +115,8 @@ Define la estructura visual:
 
 - Un `<canvas id="board">` de **300 × 600** píxeles donde se renderiza el tablero.
 - Un panel lateral con `SCORE`, `LINES`, `LEVEL`, vista de la siguiente pieza y la lista de controles.
-- Un overlay para los estados **PAUSA** y **GAME OVER**.
+- Un overlay (`#overlay`) para el estado **GAME OVER**.
+- Un menú de pausa (`#pause-menu`) con sus botones y el selector de nivel inicial.
 
 ### 2. `style.css`
 
@@ -115,7 +133,7 @@ Contiene toda la lógica del juego. A grandes rasgos:
 - **Game loop** (`loop`): basado en `requestAnimationFrame`, acumula el tiempo transcurrido y baja la pieza una fila cuando se supera `dropInterval`.
 - **Limpieza de líneas** (`clearLines`): recorre el tablero de abajo hacia arriba; cada fila completa se elimina y se inserta una vacía en la cima.
 - **Puntuación**: usa la tabla clásica `[0, 100, 300, 500, 800]` multiplicada por el nivel actual; el hard drop suma 2 puntos por celda recorrida y el soft drop 1 punto por fila.
-- **Nivel y velocidad**: el nivel sube cada 10 líneas; la velocidad de caída se calcula como `max(100, 1000 − (level − 1) × 90)` milisegundos.
+- **Nivel y velocidad**: la partida empieza en el nivel inicial elegido y sube un nivel cada 10 líneas (`nivelInicial + floor(líneas / 10)`); la velocidad de caída se calcula como `max(100, 1000 − (level − 1) × 90)` milisegundos.
 - **Ghost piece** (`ghostY`): proyecta la posición final de la pieza actual hacia abajo y la dibuja con `globalAlpha = 0.2`.
 
 ### Flujo del juego
@@ -133,7 +151,7 @@ init()
      ├─ draw()  (grid + tablero + ghost + pieza actual)
      └─ requestAnimationFrame(loop)
 
-   keydown → mover / rotar / soft-drop / hard-drop / pausa
+   keydown → mover / rotar / soft-drop / hard-drop / hold / menú de pausa
 ```
 
 Cuando una pieza recién generada ya colisiona al aparecer (`spawn`), se dispara `endGame()` y se muestra el overlay de **Game Over**.
@@ -173,9 +191,11 @@ Algunos parámetros fáciles de tunear en `game.js`:
 | `COLS`         | Columnas del tablero                     | `10`                  |
 | `ROWS`         | Filas del tablero                        | `20`                  |
 | `BLOCK`        | Tamaño en píxeles de cada celda          | `30`                  |
-| `COLORS`       | Paleta de colores por tipo de pieza      | 7 colores             |
+| `SKINS`        | Skins: paleta (7 colores), fondo, rejilla y función de dibujo por bloque | `retro`, `neon`, `pastel`, `pixel` |
 | `LINE_SCORES`  | Puntos por 1, 2, 3 o 4 líneas eliminadas | `[0,100,300,500,800]` |
 | `dropInterval` | Velocidad inicial de caída en ms         | `1000`                |
+
+Para crear una skin nueva, añade una entrada a `SKINS` con `name`, `bg`, `grid`, `colors` (índice 0 = `null`, 1–7 = I, O, T, S, Z, J, L) y `drawBlock(context, px, py, size, color, alpha)`. El selector se rellena automáticamente a partir de `SKINS`.
 
 > Si cambias `COLS`, `ROWS` o `BLOCK`, recuerda ajustar también `width` y `height` del `<canvas id="board">` en `index.html` para que coincida (`COLS × BLOCK` × `ROWS × BLOCK`).
 
