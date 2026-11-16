@@ -40,7 +40,7 @@ body {
 #board {
   display: block;
   border: 1px solid #2a2a3a;
-  background: #1a1a25;
+  background: var(--board-bg, #1a1a25);
   border-radius: 4px;
   box-shadow: 0 0 40px rgba(0, 0, 0, 0.6);
 }
@@ -79,7 +79,7 @@ body {
 #hold-canvas {
   display: block;
   border: 1px solid #2a2a3a;
-  background: #1a1a25;
+  background: var(--board-bg, #1a1a25);
   border-radius: 4px;
 }
 
@@ -171,4 +171,49 @@ kbd {
 
 #restart-btn:hover {
   background: #9bbdff;
+}
+
+/* ---- Skins ---- */
+#board,
+#next-canvas {
+  transition: background 0.2s, box-shadow 0.2s;
+}
+
+#hold-canvas {
+  transition: opacity 0.15s, border-color 0.15s, background 0.2s;
+}
+
+#skin-select {
+  background: #22223a;
+  color: #e0e0e0;
+  border: 1px solid #3a3a5a;
+  border-radius: 4px;
+  padding: 6px 8px;
+  font-size: 13px;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+#skin-select:focus {
+  outline: 1px solid #7aa2f7;
+}
+
+body[data-skin="neon"] #board {
+  border-color: #00f0ff;
+  box-shadow: 0 0 24px rgba(0, 240, 255, 0.35), 0 0 40px rgba(0, 0, 0, 0.6);
+}
+
+body[data-skin="pastel"] #board,
+body[data-skin="pastel"] #next-canvas,
+body[data-skin="pastel"] #hold-canvas {
+  border-color: #d9cfe0;
+  border-radius: 10px;
+}
+
+body[data-skin="pixel"] #board,
+body[data-skin="pixel"] #next-canvas,
+body[data-skin="pixel"] #hold-canvas {
+  border-color: #4a4a8a;
+  border-radius: 0;
+  image-rendering: pixelated;
 }
