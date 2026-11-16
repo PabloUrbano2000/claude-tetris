@@ -1,0 +1,94 @@
+name: Claude Issue Triage
+
+on:
+  issues:
+    types: [opened]
+
+jobs:
+  triage:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      issues: write
+      id-token: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Formatear issue y asignar labels con Claude
+        uses: anthropics/claude-code-action@v1
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          claude_args: >-
+            --max-turns 20
+            --allowedTools "Read,Glob,Grep,Write,Bash(gh issue view:*),Bash(gh issue edit:*),Bash(gh issue comment:*),Bash(gh label list:*),Bash(gh label create:*)"
+          prompt: |
+            Eres el encargado de clasificar los issues del repositorio ${{ github.repository }}
+            (un juego de bloques que caen en JavaScript vanilla + Canvas; lee CLAUDE.md si necesitas contexto).
+            Acaba de abrirse el issue #${{ github.event.issue.number }}.
+            Escribe todo en español.
+
+            Pasos:
+
+            1. Lee el issue: `gh issue view ${{ github.event.issue.number }} --json title,body,labels,author`
+               y revisa los labels existentes con `gh label list --limit 200`.
+
+            2. Reescribe el cuerpo del issue en Markdown válido para GitHub, sin inventar datos
+               y sin perder nada de lo que escribió el autor. Usa esta estructura
+               (omite las secciones que no apliquen):
+
+               ## 📝 Descripción
+               ## 🔁 Pasos para reproducir   (solo bugs, lista numerada)
+               ## ✅ Comportamiento esperado
+               ## ❌ Comportamiento actual
+               ## 💡 Propuesta / Criterios de aceptación   (lista de tareas `- [ ]`)
+               ## 📎 Información adicional
+
+               Al final añade una sección colapsable con el texto original:
+               <details><summary>Texto original</summary>
+
+               (texto original aquí)
+
+               </details>
+
+               Si el título es poco claro, mejóralo (conciso, en español, sin prefijos como "[BUG]").
+               Guarda el cuerpo nuevo en el archivo `issue_body.md` con la herramienta Write y aplícalo con
+               `gh issue edit ${{ github.event.issue.number }} --body-file issue_body.md` (y `--title "..."` si cambia).
+
+            3. Decide los labels adecuados. Prefiere los existentes. Si hace falta uno que no existe,
+               créalo con `gh label create "<nombre>" --color <hex sin #> --description "<descripción en español>"`.
+               Usa como guía:
+               - Tipo (uno): bug, enhancement, documentation, question
+               - Prioridad (uno): `prioridad: alta`, `prioridad: media`, `prioridad: baja`
+               - Área (uno o más): `área: jugabilidad`, `área: interfaz`, `área: controles`, `área: rendimiento`
+               Luego aplícalos con `gh issue edit ${{ github.event.issue.number }} --add-label "a,b,c"`.
+
+            4. Publica un comentario con tu observación en Markdown. Guárdalo en `triage_comment.md`
+               con Write y publícalo con `gh issue comment ${{ github.event.issue.number }} --body-file triage_comment.md`.
+               Formato:
+
+               ### 🤖 Análisis automático del issue
+
+               **Tipo:** ... · **Prioridad:** ... · **Área:** ...
+
+               #### Resumen
+               (2–3 frases)
+
+               #### Observaciones
+               - Posible causa o archivo/función relacionada en el código (p. ej. `game.js` → `clearLines()`), si se puede identificar
+               - Información que falta y que el autor debería aportar
+
+               #### Labels aplicados
+               `label1` `label2` ...
+
+               ---
+               <sub>Generado automáticamente por Claude.</sub>
+
+            No modifiques archivos del repositorio ni abras pull requests.
