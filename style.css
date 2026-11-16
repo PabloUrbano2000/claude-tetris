@@ -172,3 +172,139 @@ kbd {
 #restart-btn:hover {
   background: #9bbdff;
 }
+
+/* ---- Menú de pausa ---- */
+.pause-box {
+  gap: 10px;
+  min-width: 220px;
+}
+
+#pm-title {
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: 4px;
+  color: #7aa2f7;
+  margin-bottom: 4px;
+}
+
+.pm-btn {
+  width: 200px;
+  background: #22223a;
+  color: #e0e0e0;
+  border: 1px solid #3a3a5a;
+  border-radius: 6px;
+  padding: 9px 0;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+
+.pm-btn:hover {
+  border-color: #7aa2f7;
+}
+
+.pm-btn:focus {
+  background: #7aa2f7;
+  border-color: #7aa2f7;
+  color: #0f0f17;
+  outline: none;
+}
+
+.pm-controls {
+  list-style: none;
+  width: 200px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 8px 10px;
+  background: #15151f;
+  border: 1px solid #2a2a3a;
+  border-radius: 6px;
+}
+
+.pm-controls.hidden {
+  display: none;
+}
+
+.pm-controls li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  color: #888;
+}
+
+.pm-controls li span {
+  display: flex;
+  gap: 3px;
+}
+
+.pm-level {
+  width: 200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 0;
+  border: 1px solid #3a3a5a;
+  border-radius: 6px;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.pm-level:focus-within {
+  border-color: #7aa2f7;
+  box-shadow: 0 0 0 1px #7aa2f7;
+}
+
+.pm-level-label {
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: #888;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.pm-stepper {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.pm-stepper button {
+  width: 28px;
+  height: 28px;
+  background: #22223a;
+  color: #e0e0e0;
+  border: 1px solid #3a3a5a;
+  border-radius: 4px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.pm-stepper button:hover:not(:disabled) {
+  background: #7aa2f7;
+  color: #0f0f17;
+}
+
+.pm-stepper button:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+#pm-level-value {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 22px;
+  font-weight: 700;
+  color: #7aa2f7;
+  min-width: 2ch;
+  text-align: center;
+}
+
+.pm-hint {
+  font-size: 10px;
+  color: #555570;
+}
