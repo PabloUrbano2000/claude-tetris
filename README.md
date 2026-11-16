@@ -44,6 +44,8 @@ Es una versión jugable del Tetris clásico con todas las mecánicas que esperar
 - **Menú de pausa** (`P` o `Esc`) con Reanudar, Reiniciar, Ver controles y selector de **Nivel inicial** (1–10) para la próxima partida. Se navega con el teclado y bloquea los controles del juego mientras está abierto. El nivel elegido se guarda en `localStorage`.
 - **Game Over** con opción de reinicio.
 - **Skins visuales** seleccionables desde el panel lateral (`SKIN`): **Retro** (bloques cuadrados y colores planos), **Neón** (fondo negro y brillo con `shadowBlur`), **Pastel** (colores suaves y esquinas redondeadas) y **Pixel art** (textura de píxeles sobre cada bloque). El cambio se aplica al instante, sin recargar, y la preferencia se guarda en `localStorage` (clave `tetris.skin`).
+- **Pantalla de inicio** con la tabla de records; la partida empieza al pulsar **Jugar** o `Enter`.
+- **Tabla de records local** (top 5) guardada en `localStorage`: al terminar, si tu puntuación entra en el top, puedes escribir tu nombre (máx. 12 caracteres) y tu fila aparece resaltada. También se guardan el **mejor combo** (bloqueos seguidos que limpian líneas) y las **líneas máximas** en una partida. El botón **Borrar records** (dos clics para confirmar) reinicia todo.
 
 ---
 
@@ -88,6 +90,7 @@ Después abre `http://localhost:8000` en el navegador.
 | `Espacio` | Hard drop (caída instantánea)     |
 | `C` / `Shift` | Reservar pieza (hold)         |
 | `P` / `Esc` | Abrir menú de pausa / reanudar  |
+| `Enter`   | Empezar desde la pantalla inicial |
 
 Dentro del menú de pausa:
 
