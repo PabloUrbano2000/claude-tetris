@@ -42,6 +42,8 @@ Es una versión jugable del Tetris clásico con todas las mecánicas que esperar
 - **Sistema de puntuación** clásico de Tetris (100 / 300 / 500 / 800 multiplicado por nivel).
 - **Niveles** que aumentan cada 10 líneas y aceleran la caída.
 - **Pausa** y **Game Over** con opción de reinicio.
+- **Pantalla de inicio** con la tabla de records; la partida empieza al pulsar **Jugar** o `Enter`.
+- **Tabla de records local** (top 5) guardada en `localStorage`: al terminar, si tu puntuación entra en el top, puedes escribir tu nombre (máx. 12 caracteres) y tu fila aparece resaltada. También se guardan el **mejor combo** (bloqueos seguidos que limpian líneas) y las **líneas máximas** en una partida. El botón **Borrar records** (dos clics para confirmar) reinicia todo.
 
 ---
 
@@ -85,6 +87,7 @@ Después abre `http://localhost:8000` en el navegador.
 | `↓`       | Soft drop (bajar más rápido)      |
 | `Espacio` | Hard drop (caída instantánea)     |
 | `P`       | Pausar / reanudar                 |
+| `Enter`   | Empezar desde la pantalla inicial |
 
 ---
 
