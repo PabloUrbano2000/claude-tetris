@@ -42,6 +42,7 @@ Es una versión jugable del Tetris clásico con todas las mecánicas que esperar
 - **Sistema de puntuación** clásico de Tetris (100 / 300 / 500 / 800 multiplicado por nivel).
 - **Niveles** que aumentan cada 10 líneas y aceleran la caída.
 - **Pausa** y **Game Over** con opción de reinicio.
+- **Skins visuales** seleccionables desde el panel lateral (`SKIN`): **Retro** (bloques cuadrados y colores planos), **Neón** (fondo negro y brillo con `shadowBlur`), **Pastel** (colores suaves y esquinas redondeadas) y **Pixel art** (textura de píxeles sobre cada bloque). El cambio se aplica al instante, sin recargar, y la preferencia se guarda en `localStorage` (clave `tetris.skin`).
 
 ---
 
@@ -173,9 +174,11 @@ Algunos parámetros fáciles de tunear en `game.js`:
 | `COLS`         | Columnas del tablero                     | `10`                  |
 | `ROWS`         | Filas del tablero                        | `20`                  |
 | `BLOCK`        | Tamaño en píxeles de cada celda          | `30`                  |
-| `COLORS`       | Paleta de colores por tipo de pieza      | 7 colores             |
+| `SKINS`        | Skins: paleta (7 colores), fondo, rejilla y función de dibujo por bloque | `retro`, `neon`, `pastel`, `pixel` |
 | `LINE_SCORES`  | Puntos por 1, 2, 3 o 4 líneas eliminadas | `[0,100,300,500,800]` |
 | `dropInterval` | Velocidad inicial de caída en ms         | `1000`                |
+
+Para crear una skin nueva, añade una entrada a `SKINS` con `name`, `bg`, `grid`, `colors` (índice 0 = `null`, 1–7 = I, O, T, S, Z, J, L) y `drawBlock(context, px, py, size, color, alpha)`. El selector se rellena automáticamente a partir de `SKINS`.
 
 > Si cambias `COLS`, `ROWS` o `BLOCK`, recuerda ajustar también `width` y `height` del `<canvas id="board">` en `index.html` para que coincida (`COLS × BLOCK` × `ROWS × BLOCK`).
 
